@@ -2,8 +2,18 @@ import { Schema, model } from 'mongoose';
 import { TAddress, TFullName, TOrders, TUser } from './user.interface';
 
 const fullNameSchema = new Schema<TFullName>({
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
+  firstName: {
+    type: String,
+    required: [true, 'First name is  required'],
+    maxlength: [20, 'First name cant be more than 20 characters'],
+    trim: true,
+  },
+  lastName: {
+    type: String,
+    required: [true, 'Last name is  required'],
+    maxlength: [20, 'Last name cant be more than 20 characters'],
+    trim: true,
+  },
 });
 
 const addressSchema = new Schema<TAddress>({
@@ -24,7 +34,7 @@ const userSchema = new Schema<TUser>({
   password: { type: String, required: true },
   fullName: { type: fullNameSchema, required: true },
   age: { type: Number, required: true },
-  email: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   isActive: { type: Boolean, required: true, default: true },
   hobbies: { type: [String] },
   address: { type: addressSchema, required: true },
