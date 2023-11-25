@@ -7,7 +7,7 @@ const createUser = async (req: Request, res: Response) => {
   try {
     const user = req.body;
     const zodValidateData = userValidationSchema.parse(user);
-    const result = await UserService.createUser(zodValidateData);
+    const result = await UserService.createUserIntoDB(zodValidateData);
     res.status(200).json({
       success: true,
       message: 'User created successfully!',
@@ -16,7 +16,7 @@ const createUser = async (req: Request, res: Response) => {
   } catch (error: any) {
     res.status(500).json({
       success: false,
-      message: error.message || 'Something went wrong',
+      message: 'Something went wrong',
       error: error,
     });
   }
@@ -24,10 +24,10 @@ const createUser = async (req: Request, res: Response) => {
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const result = await UserService.getAllUser();
+    const result = await UserService.getAllUserFromDB();
     res.status(200).json({
       success: true,
-      message: 'Student received successfully',
+      message: 'Users fetched successfully!',
       data: result,
     });
   } catch (error: any) {
@@ -41,18 +41,59 @@ const getAllUsers = async (req: Request, res: Response) => {
 
 const getSingleUser = async (req: Request, res: Response) => {
   try {
-    // eslint-disable-next-line no-undef
-    const userId: ParamsDictionary = req.params;
-    const result = await UserService.getSingleUser(userId);
+    const { userId } = req.params;
+    const result = await UserService.getSingleUserFromDB(Number(userId));
     res.status(200).json({
       success: true,
-      message: 'Single student received successfully',
+      message: 'User fetched successfully!',
       data: result,
     });
   } catch (error: any) {
     res.status(500).json({
       success: false,
-      message: error.message || 'Something went wrong',
+      message: 'Something went wrong',
+      error: error,
+    });
+  }
+};
+
+const updateSingleUser = async (req: Request, res: Response) => {
+  try {
+    const userData = req.body;
+    const { userId } = req.params;
+
+    const result = await UserService.updateSingleUserFromDB(
+      Number(userId),
+      userData
+    );
+    res.status(200).json({
+      success: true,
+      message: 'User updated successfully!',
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: 'Something went wrong',
+      error: error,
+    });
+  }
+};
+
+const deleteSingleUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await UserService.deleteSingleUserFromDB(Number(userId));
+    if (result)
+      res.status(200).json({
+        success: true,
+        message: 'User deleted successfully!',
+        data: null,
+      });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: 'Something went wrong',
       error: error,
     });
   }
@@ -62,4 +103,6 @@ export const UserController = {
   createUser,
   getAllUsers,
   getSingleUser,
+  updateSingleUser,
+  deleteSingleUser,
 };
