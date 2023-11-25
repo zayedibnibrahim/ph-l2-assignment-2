@@ -41,4 +41,14 @@ const userSchema = new Schema<TUser>({
   orders: { type: [orderSchema] },
 });
 
+userSchema.post('save', function (doc, next) {
+  doc.password = undefined;
+  next();
+});
+
+userSchema.post('find', function (doc, next) {
+  doc.password = undefined;
+  next();
+});
+
 export const User = model<TUser>('User', userSchema);

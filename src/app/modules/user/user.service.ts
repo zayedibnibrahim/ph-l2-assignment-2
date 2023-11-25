@@ -30,7 +30,7 @@ const deleteSingleUser = async (userId: number) => {
   return result;
 };
 
-export const userService = {
+export const UserService = {
   createUser,
   getAllUser,
   getSingleUser,
