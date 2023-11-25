@@ -47,7 +47,13 @@ userSchema.post('save', function (doc, next) {
 });
 
 userSchema.post('find', function (doc, next) {
-  doc.password = undefined;
+  if (Array.isArray(doc)) {
+    doc.forEach((user) => {
+      user.password = undefined;
+    });
+  } else {
+    doc.password = undefined;
+  }
   next();
 });
 
