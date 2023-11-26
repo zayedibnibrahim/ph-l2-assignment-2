@@ -13,11 +13,14 @@ const createUser = async (req: Request, res: Response) => {
       message: 'User created successfully!',
       data: result,
     });
-  } catch (error: any) {
+  } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: 'Something went wrong',
-      error: error,
+      message: err.message || 'Something went wrong',
+      error: {
+        code: res.statusCode,
+        description: err.message || 'Something went wrong',
+      },
     });
   }
 };
@@ -30,11 +33,14 @@ const getAllUsers = async (req: Request, res: Response) => {
       message: 'Users fetched successfully!',
       data: result,
     });
-  } catch (error: any) {
+  } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: error.message || 'Something went wrong',
-      error: error,
+      message: err.message || 'Something went wrong',
+      error: {
+        code: res.statusCode,
+        description: err.message || 'Something went wrong',
+      },
     });
   }
 };
@@ -48,11 +54,14 @@ const getSingleUser = async (req: Request, res: Response) => {
       message: 'User fetched successfully!',
       data: result,
     });
-  } catch (error: any) {
+  } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: 'Something went wrong',
-      error: error,
+      message: err.message || 'Something went wrong',
+      error: {
+        code: res.statusCode,
+        description: err.message || 'Something went wrong',
+      },
     });
   }
 };
@@ -71,11 +80,14 @@ const updateSingleUser = async (req: Request, res: Response) => {
       message: 'User updated successfully!',
       data: result,
     });
-  } catch (error: any) {
+  } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: 'Something went wrong',
-      error: error,
+      message: err.message || 'Something went wrong',
+      error: {
+        code: res.statusCode,
+        description: err.message || 'Something went wrong',
+      },
     });
   }
 };
@@ -90,11 +102,14 @@ const deleteSingleUser = async (req: Request, res: Response) => {
         message: 'User deleted successfully!',
         data: null,
       });
-  } catch (error: any) {
+  } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: 'Something went wrong',
-      error: error,
+      message: err.message || 'Something went wrong',
+      error: {
+        code: res.statusCode,
+        description: err.message || 'Something went wrong',
+      },
     });
   }
 };

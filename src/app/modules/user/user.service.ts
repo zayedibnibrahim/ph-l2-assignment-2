@@ -18,6 +18,8 @@ const getSingleUserFromDB = async (userId: number) => {
   if (await User.isUserExists(userId)) {
     const result = await User.findOne({ userId }).select('-password');
     return result;
+  } else {
+    throw new Error('User not found');
   }
 };
 
@@ -29,16 +31,17 @@ const updateSingleUserFromDB = async (userId: number, userData: TUser) => {
     });
     return result;
   } else {
-    const error = new Error('User not found');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (error as any).statusCode = 404;
-    throw error;
+    throw new Error('User not found');
   }
 };
 
 const deleteSingleUserFromDB = async (userId: number) => {
-  const result = await User.deleteOne({ userId });
-  return result;
+  if (await User.isUserExists(userId)) {
+    const result = await User.deleteOne({ userId });
+    return result;
+  } else {
+    throw new Error('User not found');
+  }
 };
 
 export const UserService = {
