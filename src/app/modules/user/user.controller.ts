@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express';
-import userValidationSchema from './user.validation';
+
 import { UserService } from './user.service';
+import { orderValidationSchema, userValidationSchema } from './user.validation';
 
 const createUser = async (req: Request, res: Response) => {
   try {
@@ -95,13 +96,80 @@ const updateSingleUser = async (req: Request, res: Response) => {
 const deleteSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const result = await UserService.deleteSingleUserFromDB(Number(userId));
-    if (result)
-      res.status(200).json({
-        success: true,
-        message: 'User deleted successfully!',
-        data: null,
-      });
+    await UserService.deleteSingleUserFromDB(Number(userId));
+    res.status(200).json({
+      success: true,
+      message: 'User deleted successfully!',
+      data: null,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || 'Something went wrong',
+      error: {
+        code: res.statusCode,
+        description: err.message || 'Something went wrong',
+      },
+    });
+  }
+};
+
+const addUserOrder = async (req: Request, res: Response) => {
+  try {
+    const orderData = req.body;
+    const { userId } = req.params;
+
+    const zodValidateData = orderValidationSchema.parse(orderData);
+    await UserService.addUserOrderIntoDB(Number(userId), zodValidateData);
+    res.status(200).json({
+      success: true,
+      message: 'Order created successfully!',
+      data: null,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || 'Something went wrong',
+      error: {
+        code: res.statusCode,
+        description: err.message || 'Something went wrong',
+      },
+    });
+  }
+};
+
+const getUserOrder = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    const result = await UserService.getUserOrderFromDB(Number(userId));
+    res.status(200).json({
+      success: true,
+      message: 'Order fetched successfully!',
+      data: { orders: result },
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || 'Something went wrong',
+      error: {
+        code: res.statusCode,
+        description: err.message || 'Something went wrong',
+      },
+    });
+  }
+};
+
+const sumOfOrder = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    const result = await UserService.sumOfOrderFromDB(Number(userId));
+    res.status(200).json({
+      success: true,
+      message: 'Total price calculated successfully!',
+      data: { totalPrice: result },
+    });
   } catch (err: any) {
     res.status(500).json({
       success: false,
@@ -120,4 +188,7 @@ export const UserController = {
   getSingleUser,
   updateSingleUser,
   deleteSingleUser,
+  addUserOrder,
+  getUserOrder,
+  sumOfOrder,
 };
